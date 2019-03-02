@@ -14,7 +14,7 @@ def PIL_to_npimage(im):
     #return +np.frombuffer(im.tobytes(), dtype='uint8').reshape((h,w,d))
 
 
-def mplfig_to_npimage(fig):
+def mplfig_to_npimage(fig, tight_bbox=False):
     """ Converts a matplotlib figure to a RGB frame after updating the canvas"""
     #  only the Agg backend now supports the tostring_rgb function
     from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -28,6 +28,15 @@ def mplfig_to_npimage(fig):
     #  exports the canvas to a string buffer and then to a numpy nd.array
     buf = canvas.tostring_rgb()
     image= np.fromstring(buf,dtype=np.uint8)
+    
+    # crops output to tightbox defined by matplotlib
+    if tight_bbox=True:
+        bbox = fig.get_tightbbox(fig.canvas.get_renderer())
+        bbox_bounds_px = np.round(np.asarray(bbox.extents*outputfigure.dpi)).astype(int)
+        
+        
+        return image.reshape(h,w,3)
+    
     return image.reshape(h,w,3)
 
 
